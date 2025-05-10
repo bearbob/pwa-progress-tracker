@@ -290,7 +290,7 @@ class TrackerApp {
         trackersList.innerHTML = '';
         
         if (this.trackers.length === 0) {
-            trackersList.innerHTML = '<p>No trackers yet. Use the menu in the top right to create a new tracker.</p>';
+            trackersList.innerHTML = '<p class="no-trackers-message">No trackers yet. Use the menu in the top right to create a new tracker.</p>';
             return;
         }
         

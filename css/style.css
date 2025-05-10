@@ -147,6 +147,18 @@ main {
     max-width: 800px;
     margin: 0 auto;
     padding: 1rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.no-trackers-message {
+    text-align: center;
+    color: #666;
+    padding: 2rem 0;
+    font-size: 1.1rem;
 }
 
 section {
