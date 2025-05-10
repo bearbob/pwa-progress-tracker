@@ -1,7 +1,7 @@
 {
   "name": "Progress Tracker",
   "short_name": "Tracker",
-  "description": "A Progressive Web App to track progress towards your goals",
+  "description": "A Web App to track progress towards your goals",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f5f5f5",
