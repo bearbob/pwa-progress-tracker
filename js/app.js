@@ -5,6 +5,8 @@ const newTrackerForm = document.getElementById('new-tracker-form');
 const trackerNameInput = document.getElementById('tracker-name');
 const currentValueInput = document.getElementById('current-value');
 const targetValueInput = document.getElementById('target-value');
+const startDateInput = document.getElementById('start-date');
+const targetDateInput = document.getElementById('target-date');
 const trackersList = document.getElementById('trackers-list');
 const menuButton = document.getElementById('menu-button');
 const menuDropdown = document.getElementById('menu-dropdown');
@@ -14,11 +16,13 @@ const closeModalButton = document.getElementById('close-modal-button');
 
 // Tracker class to manage individual trackers
 class Tracker {
-    constructor(id, name, currentValue, targetValue, history = []) {
+    constructor(id, name, currentValue, targetValue, startDate = null, targetDate = null, history = []) {
         this.id = id;
         this.name = name;
         this.currentValue = parseFloat(currentValue);
         this.targetValue = parseFloat(targetValue);
+        this.startDate = startDate;
+        this.targetDate = targetDate;
         this.history = history.length > 0 ? history : [{
             date: new Date().toISOString(),
             value: this.currentValue
@@ -27,6 +31,54 @@ class Tracker {
 
     getProgress() {
         return Math.min(100, (this.currentValue / this.targetValue) * 100);
+    }
+    
+    getExpectedProgress() {
+        // If no start or target date, return null (can't calculate expected progress)
+        if (!this.startDate || !this.targetDate) {
+            return null;
+        }
+        
+        const start = new Date(this.startDate);
+        const end = new Date(this.targetDate);
+        const current = new Date();
+        
+        // If current date is before start date, expected progress is 0%
+        if (current < start) {
+            return 0;
+        }
+        
+        // If current date is after target date, expected progress is 100%
+        if (current > end) {
+            return 100;
+        }
+        
+        // Calculate what percentage of time has elapsed
+        const totalDuration = end.getTime() - start.getTime();
+        const elapsedDuration = current.getTime() - start.getTime();
+        const timeProgressPercent = (elapsedDuration / totalDuration) * 100;
+        
+        return timeProgressPercent;
+    }
+    
+    getProgressStatus() {
+        const expectedProgress = this.getExpectedProgress();
+        
+        // If we can't calculate expected progress, return "on-track"
+        if (expectedProgress === null) {
+            return "on-track";
+        }
+        
+        const actualProgress = this.getProgress();
+        const difference = actualProgress - expectedProgress;
+        
+        if (difference < -5) {
+            return "off-track"; // More than 5% behind
+        } else if (difference < 0) {
+            return "slightly-off"; // Between 0% and 5% behind
+        } else {
+            return "on-track"; // On track or ahead
+        }
     }
 
     updateValue(newValue) {
@@ -130,6 +182,8 @@ class TrackerApp {
                     this.showRenameForm(trackerId);
                 } else if (action === 'delete') {
                     this.deleteTracker(trackerId);
+                } else if (action === 'update-dates') {
+                    this.showDateForm(trackerId);
                 }
                 
                 // Close the menu
@@ -158,6 +212,13 @@ class TrackerApp {
                 const newName = e.target.querySelector('.new-name-input').value;
                 this.renameTracker(trackerId, newName);
             }
+
+            if (e.target.classList.contains('date-form')) {
+                const newStartDate = e.target.querySelector('.start-date-input').value;
+                const newTargetDate = e.target.querySelector('.target-date-input').value;
+                this.updateStartDate(trackerId, newStartDate || null);
+                this.updateTargetDate(trackerId, newTargetDate || null);
+            }
         });
     }
 
@@ -167,7 +228,7 @@ class TrackerApp {
         if (savedTrackers) {
             const parsedTrackers = JSON.parse(savedTrackers);
             this.trackers = parsedTrackers.map(tracker => 
-                new Tracker(tracker.id, tracker.name, tracker.currentValue, tracker.targetValue, tracker.history)
+                new Tracker(tracker.id, tracker.name, tracker.currentValue, tracker.targetValue, tracker.startDate, tracker.targetDate, tracker.history)
             );
         }
     }
@@ -180,12 +241,14 @@ class TrackerApp {
         const name = trackerNameInput.value.trim();
         const currentValue = currentValueInput.value;
         const targetValue = targetValueInput.value;
+        const startDate = startDateInput.value || null;
+        const targetDate = targetDateInput.value || null;
         
         // Generate a unique ID using timestamp
         const id = 'tracker_' + Date.now();
         
         // Create new tracker and add to the collection
-        const newTracker = new Tracker(id, name, currentValue, targetValue);
+        const newTracker = new Tracker(id, name, currentValue, targetValue, startDate, targetDate);
         this.trackers.push(newTracker);
         
         // Save and render
@@ -216,6 +279,26 @@ class TrackerApp {
         }
     }
     
+    updateStartDate(trackerId, newStartDate) {
+        const tracker = this.trackers.find(t => t.id === trackerId);
+        
+        if (tracker) {
+            tracker.startDate = newStartDate;
+            this.saveToLocalStorage();
+            this.renderTrackers();
+        }
+    }
+    
+    updateTargetDate(trackerId, newTargetDate) {
+        const tracker = this.trackers.find(t => t.id === trackerId);
+        
+        if (tracker) {
+            tracker.targetDate = newTargetDate;
+            this.saveToLocalStorage();
+            this.renderTrackers();
+        }
+    }
+
     renameTracker(trackerId, newName) {
         const tracker = this.trackers.find(t => t.id === trackerId);
         
@@ -280,9 +363,39 @@ class TrackerApp {
         nameInput.focus();
     }
 
+    showDateForm(trackerId) {
+        const card = trackersList.querySelector(`.tracker-card[data-id="${trackerId}"]`);
+        const tracker = this.trackers.find(t => t.id === trackerId);
+        
+        // Hide other forms that might be open
+        card.querySelectorAll('.update-form, .history-list').forEach(el => el.classList.add('hidden'));
+        
+        const dateForm = card.querySelector('.date-form');
+        dateForm.classList.remove('hidden');
+        
+        // Set current values
+        const startDateField = dateForm.querySelector('.start-date-input');
+        const targetDateField = dateForm.querySelector('.target-date-input');
+        
+        if (tracker.startDate) {
+            startDateField.value = tracker.startDate;
+        }
+        if (tracker.targetDate) {
+            targetDateField.value = tracker.targetDate;
+        }
+        
+        startDateField.focus();
+    }
+
     formatDate(dateString) {
         const date = new Date(dateString);
         return date.toLocaleString();
+    }
+
+    formatDateForDisplay(dateString) {
+        if (!dateString) return 'Not set';
+        const date = new Date(dateString);
+        return date.toLocaleDateString();
     }
 
     renderTrackers() {
@@ -300,6 +413,7 @@ class TrackerApp {
         // Create tracker card for each tracker
         sortedTrackers.forEach(tracker => {
             const progress = tracker.getProgress();
+            const progressStatus = tracker.getProgressStatus();
             
             // Create history HTML
             let historyHTML = '';
@@ -308,6 +422,31 @@ class TrackerApp {
                     ${this.formatDate(entry.date)}: ${entry.value}
                 </div>`;
             });
+            
+            // Create dates display
+            const startDateDisplay = this.formatDateForDisplay(tracker.startDate);
+            const targetDateDisplay = this.formatDateForDisplay(tracker.targetDate);
+            const datesHTML = tracker.startDate || tracker.targetDate ? 
+                `<div class="tracker-dates">
+                    <span>Start: ${startDateDisplay}</span>
+                    <span>Target: ${targetDateDisplay}</span>
+                </div>` : '';
+            
+            // Progress status message
+            let statusMessage = '';
+            if (tracker.startDate && tracker.targetDate) {
+                const expectedProgress = tracker.getExpectedProgress();
+                if (expectedProgress !== null) {
+                    const difference = progress - expectedProgress;
+                    if (difference < -5) {
+                        statusMessage = `<div class="status-message behind">Behind schedule by ${Math.abs(difference).toFixed(1)}%</div>`;
+                    } else if (difference < 0) {
+                        statusMessage = `<div class="status-message slightly-behind">Slightly behind by ${Math.abs(difference).toFixed(1)}%</div>`;
+                    } else {
+                        statusMessage = `<div class="status-message ahead">On track or ahead by ${difference.toFixed(1)}%</div>`;
+                    }
+                }
+            }
             
             // Create tracker card
             const trackerHTML = `
@@ -321,6 +460,7 @@ class TrackerApp {
                                 <span class="dot"></span>
                             </button>
                             <div class="tracker-menu-dropdown hidden" data-id="${tracker.id}">
+                                <button class="tracker-menu-item" data-action="update-dates">Set Dates</button>
                                 <button class="tracker-menu-item" data-action="show-history">Show History</button>
                                 <button class="tracker-menu-item" data-action="update-target">Update Target</button>
                                 <button class="tracker-menu-item" data-action="rename">Rename</button>
@@ -330,15 +470,18 @@ class TrackerApp {
                     </div>
                     
                     <div class="progress-container">
-                        <div class="progress-bar" style="width: ${progress}%">
+                        <div class="progress-bar ${progressStatus}" style="width: ${progress}%">
                             ${Math.round(progress)}%
                         </div>
                     </div>
+                    ${statusMessage}
                     
                     <div class="tracker-values">
                         <span>Current: ${tracker.currentValue}</span>
                         <span>Target: ${tracker.targetValue}</span>
                     </div>
+                    
+                    ${datesHTML}
                     
                     <div class="tracker-actions">
                         <button class="btn btn-update">Update Value</button>
@@ -364,6 +507,18 @@ class TrackerApp {
                         <div class="form-group">
                             <label>New Name:</label>
                             <input type="text" class="new-name-input" required>
+                        </div>
+                        <button type="submit" class="btn">Save</button>
+                    </form>
+                    
+                    <form class="update-form date-form hidden">
+                        <div class="form-group">
+                            <label>Start Date:</label>
+                            <input type="date" class="start-date-input">
+                        </div>
+                        <div class="form-group">
+                            <label>Target Date:</label>
+                            <input type="date" class="target-date-input">
                         </div>
                         <button type="submit" class="btn">Save</button>
                     </form>

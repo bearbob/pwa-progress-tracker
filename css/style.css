@@ -246,11 +246,22 @@ input {
 
 .progress-bar {
     height: 100%;
-    background-color: #4caf50;
     text-align: center;
     color: white;
     font-weight: 500;
-    transition: width 0.3s ease;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.progress-bar.on-track {
+    background-color: #4caf50;  /* Green */
+}
+
+.progress-bar.slightly-off {
+    background-color: #ffc107;  /* Yellow */
+}
+
+.progress-bar.off-track {
+    background-color: #ff9800;  /* Orange */
 }
 
 .tracker-values {
@@ -337,6 +348,42 @@ input {
 
 .tracker-menu-item-danger:hover {
     background-color: #fff0f0;
+}
+
+/* Status messages */
+.status-message {
+    font-size: 0.85rem;
+    margin: -0.5rem 0 0.5rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.status-message.behind {
+    background-color: rgba(255, 152, 0, 0.1);
+    color: #e65100;
+}
+
+.status-message.slightly-behind {
+    background-color: rgba(255, 193, 7, 0.1);
+    color: #ff8f00;
+}
+
+.status-message.ahead {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #2e7d32;
+}
+
+/* Tracker dates display */
+.tracker-dates {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: #666;
+    margin: 0.5rem 0;
+    padding: 0.5rem 0;
+    border-top: 1px dashed #eee;
+    border-bottom: 1px dashed #eee;
 }
 
 footer {
