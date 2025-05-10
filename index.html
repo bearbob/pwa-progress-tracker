@@ -13,34 +13,54 @@
 </head>
 <body>
     <header>
-        <h1>Progress Tracker</h1>
+        <div class="header-container">
+            <h1>Progress Tracker</h1>
+            <div class="menu-container">
+                <button id="menu-button" class="menu-button" aria-label="Menu">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </button>
+                <div id="menu-dropdown" class="menu-dropdown hidden">
+                    <button id="create-tracker-button" class="menu-item">Create New Tracker</button>
+                </div>
+            </div>
+        </div>
     </header>
     
     <main>
-        <section id="tracker-form">
-            <h2>Create New Tracker</h2>
-            <form id="new-tracker-form">
-                <div class="form-group">
-                    <label for="tracker-name">Tracker Name:</label>
-                    <input type="text" id="tracker-name" required>
-                </div>
-                <div class="form-group">
-                    <label for="current-value">Current Value:</label>
-                    <input type="number" id="current-value" min="0" required>
-                </div>
-                <div class="form-group">
-                    <label for="target-value">Target Value:</label>
-                    <input type="number" id="target-value" min="1" required>
-                </div>
-                <button type="submit" class="btn">Create Tracker</button>
-            </form>
-        </section>
-        
         <section id="trackers-container">
             <h2>Your Trackers</h2>
             <div id="trackers-list"></div>
         </section>
     </main>
+
+    <!-- Modal overlay for tracker creation -->
+    <div id="create-tracker-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create New Tracker</h2>
+                <button id="close-modal-button" class="close-button">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="new-tracker-form">
+                    <div class="form-group">
+                        <label for="tracker-name">Tracker Name:</label>
+                        <input type="text" id="tracker-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="current-value">Current Value:</label>
+                        <input type="number" id="current-value" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="target-value">Target Value:</label>
+                        <input type="number" id="target-value" min="1" required>
+                    </div>
+                    <button type="submit" class="btn">Create Tracker</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <footer>
         <p>&copy; 2025 Progress Tracker PWA</p>

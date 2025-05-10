@@ -6,6 +6,11 @@ const trackerNameInput = document.getElementById('tracker-name');
 const currentValueInput = document.getElementById('current-value');
 const targetValueInput = document.getElementById('target-value');
 const trackersList = document.getElementById('trackers-list');
+const menuButton = document.getElementById('menu-button');
+const menuDropdown = document.getElementById('menu-dropdown');
+const createTrackerButton = document.getElementById('create-tracker-button');
+const createTrackerModal = document.getElementById('create-tracker-modal');
+const closeModalButton = document.getElementById('close-modal-button');
 
 // Tracker class to manage individual trackers
 class Tracker {
@@ -40,16 +45,53 @@ class TrackerApp {
         this.loadFromLocalStorage();
         this.renderTrackers();
         this.setupEventListeners();
+        this.activeMenu = null; // Keep track of which tracker menu is active
     }
 
     setupEventListeners() {
+        // Menu button click
+        menuButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menuDropdown.classList.toggle('hidden');
+        });
+
+        // Create tracker button in menu
+        createTrackerButton.addEventListener('click', () => {
+            menuDropdown.classList.add('hidden');
+            createTrackerModal.classList.remove('hidden');
+        });
+
+        // Close modal button
+        closeModalButton.addEventListener('click', () => {
+            createTrackerModal.classList.add('hidden');
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === createTrackerModal) {
+                createTrackerModal.classList.add('hidden');
+            }
+            
+            // Close dropdown when clicking outside
+            if (!menuButton.contains(e.target) && !menuDropdown.contains(e.target)) {
+                menuDropdown.classList.add('hidden');
+            }
+
+            // Close active tracker menu if clicking outside
+            if (this.activeMenu && !e.target.closest('.tracker-menu-button')) {
+                this.activeMenu.classList.add('hidden');
+                this.activeMenu = null;
+            }
+        });
+
         // Add new tracker form submission
         newTrackerForm.addEventListener('submit', (e) => {
             e.preventDefault();
             this.addNewTracker();
+            createTrackerModal.classList.add('hidden');
         });
 
-        // Event delegation for tracker actions (update, delete)
+        // Event delegation for tracker actions (update, menu toggle)
         trackersList.addEventListener('click', (e) => {
             const target = e.target;
             const trackerId = target.closest('.tracker-card')?.dataset.id;
@@ -61,24 +103,60 @@ class TrackerApp {
                 this.toggleUpdateForm(trackerId);
             }
             
-            // Handle delete button click
-            if (target.classList.contains('btn-delete')) {
-                this.deleteTracker(trackerId);
+            // Handle tracker menu button click
+            if (target.closest('.tracker-menu-button')) {
+                e.stopPropagation();
+                const menuDropdown = document.querySelector(`.tracker-menu-dropdown[data-id="${trackerId}"]`);
+                
+                // Close any other open menus
+                if (this.activeMenu && this.activeMenu !== menuDropdown) {
+                    this.activeMenu.classList.add('hidden');
+                }
+                
+                // Toggle the clicked menu
+                menuDropdown.classList.toggle('hidden');
+                this.activeMenu = menuDropdown.classList.contains('hidden') ? null : menuDropdown;
             }
             
-            // Handle history button click
-            if (target.classList.contains('btn-history')) {
-                this.toggleHistory(trackerId);
+            // Handle menu options
+            if (target.closest('.tracker-menu-item')) {
+                const action = target.dataset.action || target.closest('.tracker-menu-item').dataset.action;
+                
+                if (action === 'show-history') {
+                    this.toggleHistory(trackerId);
+                } else if (action === 'update-target') {
+                    this.showUpdateTargetForm(trackerId);
+                } else if (action === 'rename') {
+                    this.showRenameForm(trackerId);
+                } else if (action === 'delete') {
+                    this.deleteTracker(trackerId);
+                }
+                
+                // Close the menu
+                const menuDropdown = document.querySelector(`.tracker-menu-dropdown[data-id="${trackerId}"]`);
+                menuDropdown.classList.add('hidden');
+                this.activeMenu = null;
             }
         });
 
-        // Event delegation for update form submission
+        // Event delegation for various form submissions
         trackersList.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const trackerId = e.target.closest('.tracker-card').dataset.id;
+            
             if (e.target.classList.contains('update-value-form')) {
-                e.preventDefault();
-                const trackerId = e.target.closest('.tracker-card').dataset.id;
                 const newValue = e.target.querySelector('.new-value-input').value;
                 this.updateTrackerValue(trackerId, newValue);
+            }
+            
+            if (e.target.classList.contains('update-target-form')) {
+                const newTarget = e.target.querySelector('.new-target-input').value;
+                this.updateTrackerTarget(trackerId, newTarget);
+            }
+            
+            if (e.target.classList.contains('rename-form')) {
+                const newName = e.target.querySelector('.new-name-input').value;
+                this.renameTracker(trackerId, newName);
             }
         });
     }
@@ -128,6 +206,26 @@ class TrackerApp {
         }
     }
 
+    updateTrackerTarget(trackerId, newTarget) {
+        const tracker = this.trackers.find(t => t.id === trackerId);
+        
+        if (tracker) {
+            tracker.targetValue = parseFloat(newTarget);
+            this.saveToLocalStorage();
+            this.renderTrackers();
+        }
+    }
+    
+    renameTracker(trackerId, newName) {
+        const tracker = this.trackers.find(t => t.id === trackerId);
+        
+        if (tracker) {
+            tracker.name = newName.trim();
+            this.saveToLocalStorage();
+            this.renderTrackers();
+        }
+    }
+
     deleteTracker(trackerId) {
         if (confirm('Are you sure you want to delete this tracker?')) {
             this.trackers = this.trackers.filter(tracker => tracker.id !== trackerId);
@@ -154,6 +252,34 @@ class TrackerApp {
         historyList.classList.toggle('hidden');
     }
 
+    showUpdateTargetForm(trackerId) {
+        const card = trackersList.querySelector(`.tracker-card[data-id="${trackerId}"]`);
+        const tracker = this.trackers.find(t => t.id === trackerId);
+        
+        // Hide other forms that might be open
+        card.querySelectorAll('.update-form, .history-list').forEach(el => el.classList.add('hidden'));
+        
+        const updateTargetForm = card.querySelector('.update-target-form');
+        updateTargetForm.classList.remove('hidden');
+        const targetInput = updateTargetForm.querySelector('.new-target-input');
+        targetInput.value = tracker.targetValue;
+        targetInput.focus();
+    }
+    
+    showRenameForm(trackerId) {
+        const card = trackersList.querySelector(`.tracker-card[data-id="${trackerId}"]`);
+        const tracker = this.trackers.find(t => t.id === trackerId);
+        
+        // Hide other forms that might be open
+        card.querySelectorAll('.update-form, .history-list').forEach(el => el.classList.add('hidden'));
+        
+        const renameForm = card.querySelector('.rename-form');
+        renameForm.classList.remove('hidden');
+        const nameInput = renameForm.querySelector('.new-name-input');
+        nameInput.value = tracker.name;
+        nameInput.focus();
+    }
+
     formatDate(dateString) {
         const date = new Date(dateString);
         return date.toLocaleString();
@@ -164,7 +290,7 @@ class TrackerApp {
         trackersList.innerHTML = '';
         
         if (this.trackers.length === 0) {
-            trackersList.innerHTML = '<p>No trackers yet. Create one using the form above.</p>';
+            trackersList.innerHTML = '<p>No trackers yet. Use the menu in the top right to create a new tracker.</p>';
             return;
         }
         
@@ -188,6 +314,19 @@ class TrackerApp {
                 <div class="tracker-card" data-id="${tracker.id}">
                     <div class="tracker-header">
                         <h3 class="tracker-title">${tracker.name}</h3>
+                        <div class="tracker-menu-container">
+                            <button class="tracker-menu-button" aria-label="Tracker Menu">
+                                <span class="dot"></span>
+                                <span class="dot"></span>
+                                <span class="dot"></span>
+                            </button>
+                            <div class="tracker-menu-dropdown hidden" data-id="${tracker.id}">
+                                <button class="tracker-menu-item" data-action="show-history">Show History</button>
+                                <button class="tracker-menu-item" data-action="update-target">Update Target</button>
+                                <button class="tracker-menu-item" data-action="rename">Rename</button>
+                                <button class="tracker-menu-item tracker-menu-item-danger" data-action="delete">Delete Tracker</button>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="progress-container">
@@ -203,14 +342,28 @@ class TrackerApp {
                     
                     <div class="tracker-actions">
                         <button class="btn btn-update">Update Value</button>
-                        <button class="btn btn-history">Show History</button>
-                        <button class="btn btn-danger btn-delete">Delete</button>
                     </div>
                     
                     <form class="update-form update-value-form hidden">
                         <div class="form-group">
                             <label>New Value:</label>
                             <input type="number" class="new-value-input" min="0" required>
+                        </div>
+                        <button type="submit" class="btn">Save</button>
+                    </form>
+                    
+                    <form class="update-form update-target-form hidden">
+                        <div class="form-group">
+                            <label>New Target:</label>
+                            <input type="number" class="new-target-input" min="1" required>
+                        </div>
+                        <button type="submit" class="btn">Save</button>
+                    </form>
+                    
+                    <form class="update-form rename-form hidden">
+                        <div class="form-group">
+                            <label>New Name:</label>
+                            <input type="text" class="new-name-input" required>
                         </div>
                         <button type="submit" class="btn">Save</button>
                     </form>
