@@ -1,0 +1,1 @@
+Please replace these placeholder icons with proper icons for your app.
