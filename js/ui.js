@@ -97,6 +97,11 @@ class UIService {
             this.toggleUpdateForm(trackerId);
         }
         
+        // Handle add button click
+        if (target.classList.contains('btn-add')) {
+            this.toggleAddForm(trackerId);
+        }
+        
         // Handle tracker menu button click
         if (target.closest('.tracker-menu-button')) {
             e.stopPropagation();
@@ -145,6 +150,13 @@ class UIService {
         if (e.target.classList.contains('update-value-form')) {
             const newValue = e.target.querySelector('.new-value-input').value;
             this.trackerManager.updateTrackerValue(trackerId, newValue);
+        }
+        
+        if (e.target.classList.contains('add-value-form')) {
+            const valueToAdd = e.target.querySelector('.add-value-input').value;
+            const tracker = this.trackerManager.getTracker(trackerId);
+            const newTotal = parseFloat(tracker.currentValue) + parseFloat(valueToAdd);
+            this.trackerManager.updateTrackerValue(trackerId, newTotal);
         }
         
         if (e.target.classList.contains('update-target-form')) {
@@ -196,6 +208,25 @@ class UIService {
         
         if (!updateForm.classList.contains('hidden')) {
             updateForm.querySelector('.new-value-input').focus();
+        }
+    }
+
+    /**
+     * Toggle the add form for a tracker
+     */
+    toggleAddForm(trackerId) {
+        const card = this.elements.trackersList.querySelector(`.tracker-card[data-id="${trackerId}"]`);
+        const addForm = card.querySelector('.add-value-form');
+        
+        // Hide all other forms first
+        card.querySelectorAll('.update-form, .history-list').forEach(el => {
+            if (el !== addForm) el.classList.add('hidden');
+        });
+        
+        addForm.classList.toggle('hidden');
+        
+        if (!addForm.classList.contains('hidden')) {
+            addForm.querySelector('.add-value-input').focus();
         }
     }
 
@@ -389,13 +420,22 @@ class UIService {
                 ${datesHTML}
                 
                 <div class="tracker-actions">
-                    <button class="btn btn-update">Update Value</button>
+                    <button class="btn btn-update">Update</button>
+                    <button class="btn btn-add">Add</button>
                 </div>
                 
                 <form class="update-form update-value-form hidden">
                     <div class="form-group">
                         <label>New Value:</label>
                         <input type="number" class="new-value-input" min="0" required>
+                    </div>
+                    <button type="submit" class="btn">Save</button>
+                </form>
+                
+                <form class="update-form add-value-form hidden">
+                    <div class="form-group">
+                        <label>Add to Current Value:</label>
+                        <input type="number" class="add-value-input" required>
                     </div>
                     <button type="submit" class="btn">Save</button>
                 </form>

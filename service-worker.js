@@ -6,15 +6,17 @@ const ASSETS_TO_CACHE = [
   '/index.html',
   '/css/style.css',
   '/js/app.js',
+  '/js/models.js',
+  '/js/storage.js',
+  '/js/ui.js',
   '/manifest.json',
-  '/images/icons/icon-72x72.png',
-  '/images/icons/icon-96x96.png',
-  '/images/icons/icon-128x128.png',
-  '/images/icons/icon-144x144.png',
-  '/images/icons/icon-152x152.png',
-  '/images/icons/icon-192x192.png',
-  '/images/icons/icon-384x384.png',
-  '/images/icons/icon-512x512.png'
+  '/images/icons/ios/72.png',
+  '/images/icons/android/android-launchericon-96-96.png',
+  '/images/icons/ios/128.png',
+  '/images/icons/ios/144.png',
+  '/images/icons/ios/152.png',
+  '/images/icons/ios/192.png',
+  '/images/icons/ios/512.png'
 ];
 
 // Install event - Cache assets
