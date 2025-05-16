@@ -1,8 +1,27 @@
 // Progress Tracker PWA - Service Worker
 
 const CACHE_NAME = 'progress-tracker-v2';
-const APP_VERSION = '1.2.1'; // Version tracking - change this when updating the app
-const ASSETS_TO_CACHE = [
+const APP_VERSION = '1.2.2'; // Version tracking - change this when updating the app
+
+// Get the base path for assets
+const getBasePath = () => {
+  return self.location.pathname.replace(/\/service-worker\.js$/, '');
+};
+
+// Add the base path to each asset path
+const addBasePathToAssets = (basePath, assets) => {
+  return assets.map(asset => {
+    // If the asset already starts with http, don't modify it
+    if (asset.startsWith('http')) return asset;
+    // For root assets like '/', make sure we don't double up slashes
+    if (asset === '/') return basePath || '/';
+    // Otherwise add the base path
+    return `${basePath}${asset.startsWith('/') ? asset : `/${asset}`}`;
+  });
+};
+
+// Basic assets to cache
+const BASE_ASSETS = [
   '/',
   '/index.html',
   '/css/style.css',
@@ -12,7 +31,6 @@ const ASSETS_TO_CACHE = [
   '/js/ui.js',
   '/manifest.json',
   '/images/icons/ios/72.png',
-  '/images/icons/android/android-launchericon-96-96.png',
   '/images/icons/ios/128.png',
   '/images/icons/ios/144.png',
   '/images/icons/ios/152.png',
@@ -20,9 +38,13 @@ const ASSETS_TO_CACHE = [
   '/images/icons/ios/512.png'
 ];
 
+// Get the base path and prepare assets for caching
+const basePath = getBasePath();
+const ASSETS_TO_CACHE = addBasePathToAssets(basePath, BASE_ASSETS);
+
 // Install event - Cache assets and notify about version
 self.addEventListener('install', event => {
-  console.log(`Installing new service worker version ${APP_VERSION}`);
+  console.log(`Installing new service worker version ${APP_VERSION} with base path: ${basePath}`);
   
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -30,9 +52,6 @@ self.addEventListener('install', event => {
         return cache.addAll(ASSETS_TO_CACHE);
       })
       .then(() => {
-        // Skip waiting to activate the new service worker immediately
-        // This will not interrupt current users, but will make the update
-        // ready for the next page load
         return self.skipWaiting();
       })
   );

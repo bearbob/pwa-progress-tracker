@@ -11,7 +11,7 @@ class TrackerManager {
         this.trackers = this.storageService.loadTrackers();
         
         // Version management
-        this.currentVersion = '1.2.1'; // Client version - keep track of the last version we ran
+        this.currentVersion = '1.2.2'; // Client version - keep track of the last version we ran
         this.serverVersion = null;
         this.updateAvailable = false;
         this.serviceWorkerRegistration = null;
@@ -43,7 +43,11 @@ class TrackerManager {
     registerServiceWorker() {
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')
+                // Get the base URL for the service worker registration
+                // This handles both local development and GitHub Pages deployment
+                const swPath = new URL('service-worker.js', window.location.href).pathname;
+                
+                navigator.serviceWorker.register(swPath)
                     .then(registration => {
                         console.log('Service Worker registered with scope:', registration.scope);
                         this.serviceWorkerRegistration = registration;
