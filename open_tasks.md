@@ -1,3 +1,2 @@
-- Tracker creation has default values for current value
 - Tracker continues counting over 100%
 - tracker details are hidden by default and visible when tapping on the name

@@ -27,6 +27,7 @@ class UIService {
      */
     initialize() {
         this.setupEventListeners();
+        this.setDefaultFormValues();
         this.renderTrackers();
     }
 
@@ -81,6 +82,19 @@ class UIService {
 
         // Event delegation for various form submissions
         this.elements.trackersList.addEventListener('submit', (e) => this.handleFormSubmissions(e));
+    }
+
+    /**
+     * Set default values for the new tracker form
+     */
+    setDefaultFormValues() {
+        // Set default current value to 0
+        this.elements.currentValueInput.value = '0';
+        
+        // Set default start date to today
+        const today = new Date();
+        const formattedDate = today.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+        this.elements.startDateInput.value = formattedDate;
     }
 
     /**
