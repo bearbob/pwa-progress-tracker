@@ -9,12 +9,15 @@ class TrackerManager {
         // Initialize services
         this.storageService = new StorageService();
         this.trackers = this.storageService.loadTrackers();
-        this.uiService = new UIService(this);
         
         // Version management
-        this.currentVersion = '1.0.0'; // Client version - keep track of the last version we ran
+        this.currentVersion = '1.2.1'; // Client version - keep track of the last version we ran
+        this.serverVersion = null;
         this.updateAvailable = false;
         this.serviceWorkerRegistration = null;
+        
+        // Initialize UI after setting up version
+        this.uiService = new UIService(this);
     }
     
     /**
@@ -29,6 +32,9 @@ class TrackerManager {
         
         // Set up update notification
         this.setupUpdateNotification();
+        
+        // Update footer with version
+        this.updateVersionDisplay();
     }
     
     /**
@@ -85,21 +91,29 @@ class TrackerManager {
                     if (event.data && event.data.type === 'UPDATE_AVAILABLE') {
                         const newVersion = event.data.version;
                         console.log(`New version available: ${newVersion}`);
+                        this.serverVersion = newVersion;
                         
                         // Only show update if version is actually different
                         if (newVersion !== this.currentVersion) {
                             this.updateAvailable = true;
                             this.showUpdateNotification();
                         }
+                        
+                        // Update version in footer
+                        this.updateVersionDisplay();
                     } else if (event.data && event.data.type === 'VERSION_INFO') {
                         const serverVersion = event.data.version;
                         console.log(`Received version info: ${serverVersion}, current: ${this.currentVersion}`);
+                        this.serverVersion = serverVersion;
                         
                         if (serverVersion !== this.currentVersion) {
                             console.log('Version mismatch detected');
                             this.updateAvailable = true;
                             this.showUpdateNotification();
                         }
+                        
+                        // Update version in footer
+                        this.updateVersionDisplay();
                     }
                 });
                 
@@ -176,6 +190,17 @@ class TrackerManager {
         console.log('Showing update notification banner');
         const updateBanner = document.getElementById('update-banner');
         updateBanner.classList.add('visible');
+    }
+
+    /**
+     * Update the footer to display the current version
+     */
+    updateVersionDisplay() {
+        const versionElement = document.getElementById('app-version');
+        if (versionElement) {
+            const displayVersion = this.serverVersion || this.currentVersion;
+            versionElement.textContent = `Version ${displayVersion}`;
+        }
     }
 
     /**
