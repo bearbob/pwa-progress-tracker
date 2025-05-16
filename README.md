@@ -2,6 +2,8 @@
 
 A Progressive Web App (PWA) for tracking progress towards goals. This app allows users to create multiple trackers, each with a current value and target value. Progress is displayed visually with progress bars.
 
+This project exists because I want to track some things on my smartphone but most native apps either have limitations to trigger subscriptions or are full of ads.
+
 ## Features
 
 - Create multiple progress trackers with custom names
