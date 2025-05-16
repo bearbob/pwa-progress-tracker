@@ -15,7 +15,7 @@ class Tracker {
     }
 
     getProgress() {
-        return Math.min(100, (this.currentValue / this.targetValue) * 100);
+        return (this.currentValue / this.targetValue) * 100;
     }
     
     getExpectedProgress() {

@@ -392,8 +392,12 @@ class UIService {
                     statusMessage = `<div class="status-message behind">Behind schedule by ${Math.abs(difference).toFixed(1)}%</div>`;
                 } else if (difference < 0) {
                     statusMessage = `<div class="status-message slightly-behind">Slightly behind by ${Math.abs(difference).toFixed(1)}%</div>`;
+                } else if(progress >= 100) {
+                    statusMessage = `<div class="status-message ahead">Completed</div>`;
+                } else if (difference < 5) {
+                    statusMessage = `<div class="status-message ahead">Ahead by ${difference.toFixed(1)}%</div>`;
                 } else {
-                    statusMessage = `<div class="status-message ahead">On track or ahead by ${difference.toFixed(1)}%</div>`;
+                    statusMessage = `<div class="status-message ahead">On track by ${difference.toFixed(1)}%</div>`;
                 }
             }
         }
@@ -420,7 +424,7 @@ class UIService {
                 </div>
                 
                 <div class="progress-container">
-                    <div class="progress-bar ${progressStatus}" style="width: ${progress}%">
+                    <div class="progress-bar ${progressStatus}" style="width: ${Math.min(100,progress)}%">
                         ${Math.round(progress)}%
                     </div>
                 </div>
