@@ -314,7 +314,7 @@ input:focus {
 
 .progress-container {
     height: 50px;
-    background-color: #f1f1f1;
+    background-color: #3c3c3c;
     border-radius: 12px;
     overflow: hidden;
     margin: 1.25rem 0;
@@ -333,15 +333,15 @@ input:focus {
 }
 
 .progress-bar.on-track {
-    background: linear-gradient(90deg, #3bab58, #4caf50);
+    background: linear-gradient(90deg, #2e8645, #2f7731);
 }
 
 .progress-bar.slightly-off {
-    background: linear-gradient(90deg, #ffc107, #ffca28);
+    background: linear-gradient(90deg, #d5a107, #9d7c18);
 }
 
 .progress-bar.off-track {
-    background: linear-gradient(90deg, #ff9800, #ffb74d);
+    background: linear-gradient(90deg, #ba6804, #864b26);
 }
 
 /* Progress bar text styling */
