@@ -356,9 +356,7 @@ class UIService {
         sortedTrackers.forEach(tracker => {
             this.elements.trackersList.innerHTML += this.createTrackerHTML(tracker);
         });
-    }
-
-    /**
+    }    /**
      * Create HTML for a single tracker
      */
     createTrackerHTML(tracker) {
@@ -373,40 +371,16 @@ class UIService {
             </div>`;
         });
         
-        // Create dates display
-        const startDateDisplay = this.formatDateForDisplay(tracker.startDate);
-        const targetDateDisplay = this.formatDateForDisplay(tracker.targetDate);
-        const datesHTML = tracker.startDate || tracker.targetDate ? 
-            `<div class="tracker-dates">
-                <span>Start: ${startDateDisplay}</span>
-                <span>Target: ${targetDateDisplay}</span>
-            </div>` : '';
-        
-        // Progress status message
+        // Progress status message (keep for completion status only)
         let statusMessage = '';
-        if (tracker.startDate && tracker.targetDate) {
-            const expectedProgress = tracker.getExpectedProgress();
-            if (expectedProgress !== null) {
-                const difference = progress - expectedProgress;
-                if (difference < -5) {
-                    statusMessage = `<div class="status-message behind">Behind schedule by ${Math.abs(difference).toFixed(1)}%</div>`;
-                } else if (difference < 0) {
-                    statusMessage = `<div class="status-message slightly-behind">Slightly behind by ${Math.abs(difference).toFixed(1)}%</div>`;
-                } else if(progress >= 100) {
-                    statusMessage = `<div class="status-message ahead">Completed</div>`;
-                } else if (difference < 5) {
-                    statusMessage = `<div class="status-message ahead">Ahead by ${difference.toFixed(1)}%</div>`;
-                } else {
-                    statusMessage = `<div class="status-message ahead">On track by ${difference.toFixed(1)}%</div>`;
-                }
-            }
+        if (progress >= 100) {
+            statusMessage = `<div class="status-message ahead">Completed</div>`;
         }
         
-        // Create tracker card
+        // Create tracker card with minimalist design
         return `
             <div class="tracker-card" data-id="${tracker.id}">
                 <div class="tracker-header">
-                    <h3 class="tracker-title">${tracker.name}</h3>
                     <div class="tracker-menu-container">
                         <button class="tracker-menu-button" aria-label="Tracker Menu">
                             <span class="dot"></span>
@@ -423,19 +397,17 @@ class UIService {
                     </div>
                 </div>
                 
+                <h3 class="tracker-title">${tracker.name}</h3>
+                
                 <div class="progress-container">
                     <div class="progress-bar ${progressStatus}" style="width: ${Math.min(100,progress)}%">
-                        ${Math.round(progress)}%
+                        <span class="progress-text">
+                            <span class="progress-percentage">${Math.round(progress)}%</span>
+                            <span class="progress-values">${tracker.currentValue} / ${tracker.targetValue}</span>
+                        </span>
                     </div>
                 </div>
                 ${statusMessage}
-                
-                <div class="tracker-values">
-                    <span>Current: ${tracker.currentValue}</span>
-                    <span>Target: ${tracker.targetValue}</span>
-                </div>
-                
-                ${datesHTML}
                 
                 <div class="tracker-actions">
                     <button class="btn btn-update">Update</button>
