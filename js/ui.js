@@ -95,6 +95,9 @@ class UIService {
         const today = new Date();
         const formattedDate = today.toISOString().split('T')[0]; // Format as YYYY-MM-DD
         this.elements.startDateInput.value = formattedDate;
+        
+        // Set default target date to empty (not set)
+        this.elements.targetDateInput.value = '';
     }
 
     /**
@@ -369,23 +372,25 @@ class UIService {
             historyHTML += `<div class="history-entry">
                 ${this.formatDate(entry.date)}: ${entry.value}
             </div>`;
-        });
-          // Progress status messages
+        });        // Progress status messages
         let completionMessage = '';
         let progressStatusText = '';
+        let showProgressStatus = tracker.startDate && tracker.targetDate;
         
         // Set completion message if completed
         if (progress >= 100) {
             completionMessage = `<div class="status-message ahead">Completed</div>`;
         }
         
-        // Set progress status indicator based on tracker status
-        if (progressStatus === "on-track") {
-            progressStatusText = "On Track";
-        } else if (progressStatus === "slightly-off") {
-            progressStatusText = "Slightly Off Track";
-        } else if (progressStatus === "off-track") {
-            progressStatusText = "Off Track";
+        // Set progress status indicator based on tracker status, but only if dates are set
+        if (showProgressStatus) {
+            if (progressStatus === "on-track") {
+                progressStatusText = "On Track";
+            } else if (progressStatus === "slightly-off") {
+                progressStatusText = "Slightly Off Track";
+            } else if (progressStatus === "off-track") {
+                progressStatusText = "Off Track";
+            }
         }
         
         // Create tracker card with minimalist design
@@ -416,15 +421,13 @@ class UIService {
                             <span class="progress-values">${tracker.currentValue} / ${tracker.targetValue}</span>
                         </span>
                     </div>
-                </div>
-                <div class="tracker-status-container">
-                    <div class="progress-status ${progressStatus}">${progressStatusText}</div>
+                </div>                <div class="tracker-status-container">
+                    ${showProgressStatus ? `<div class="progress-status ${progressStatus}">${progressStatusText}</div>` : ''}
+                    <div class="tracker-actions">
+                        <button class="btn btn-update">Update</button>
+                        <button class="btn btn-add">Add</button>
+                    </div>
                     ${completionMessage}
-                </div>
-                
-                <div class="tracker-actions">
-                    <button class="btn btn-update">Update</button>
-                    <button class="btn btn-add">Add</button>
                 </div>
                 
                 <form class="update-form update-value-form hidden">
