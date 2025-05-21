@@ -281,7 +281,7 @@ input:focus {
 .tracker-card {
     border: 1px solid #eee;
     border-radius: 16px;
-    padding: 1.5rem;
+    padding: 1.0rem;
     margin-bottom: 0;
     background-color: white;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
@@ -307,7 +307,7 @@ input:focus {
 .tracker-title {
     font-size: 1.3rem;
     font-weight: 600;
-    margin: 0.25rem 0 1rem 0;
+    margin: 0 0 0 0;
     color: #333;
     padding-left: 0.25rem;
 }
