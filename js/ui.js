@@ -370,11 +370,22 @@ class UIService {
                 ${this.formatDate(entry.date)}: ${entry.value}
             </div>`;
         });
+          // Progress status messages
+        let completionMessage = '';
+        let progressStatusText = '';
         
-        // Progress status message (keep for completion status only)
-        let statusMessage = '';
+        // Set completion message if completed
         if (progress >= 100) {
-            statusMessage = `<div class="status-message ahead">Completed</div>`;
+            completionMessage = `<div class="status-message ahead">Completed</div>`;
+        }
+        
+        // Set progress status indicator based on tracker status
+        if (progressStatus === "on-track") {
+            progressStatusText = "On Track";
+        } else if (progressStatus === "slightly-off") {
+            progressStatusText = "Slightly Off Track";
+        } else if (progressStatus === "off-track") {
+            progressStatusText = "Off Track";
         }
         
         // Create tracker card with minimalist design
@@ -398,8 +409,7 @@ class UIService {
                 </div>
                 
                 <h3 class="tracker-title">${tracker.name}</h3>
-                
-                <div class="progress-container">
+                  <div class="progress-container">
                     <div class="progress-bar ${progressStatus}" style="width: ${Math.min(100,progress)}%">
                         <span class="progress-text">
                             <span class="progress-percentage">${Math.round(progress)}%</span>
@@ -407,7 +417,10 @@ class UIService {
                         </span>
                     </div>
                 </div>
-                ${statusMessage}
+                <div class="tracker-status-container">
+                    <div class="progress-status ${progressStatus}">${progressStatusText}</div>
+                    ${completionMessage}
+                </div>
                 
                 <div class="tracker-actions">
                     <button class="btn btn-update">Update</button>
