@@ -39,12 +39,13 @@ class UIService {
         this.elements.menuButton.addEventListener('click', (e) => {
             e.stopPropagation();
             this.elements.menuDropdown.classList.toggle('hidden');
-        });
-
-        // Create tracker button in menu
+        });        // Create tracker button in menu
         this.elements.createTrackerButton.addEventListener('click', () => {
             this.elements.menuDropdown.classList.add('hidden');
             this.elements.createTrackerModal.classList.remove('hidden');
+            
+            // Ensure default values are set when opening the modal
+            this.setDefaultFormValues();
         });
 
         // Close modal button
@@ -191,8 +192,7 @@ class UIService {
             const newTargetDate = e.target.querySelector('.target-date-input').value;
             this.trackerManager.updateDates(trackerId, newStartDate || null, newTargetDate || null);
         }
-    }
-
+    }    
     /**
      * Handle new tracker form submission
      */
@@ -207,6 +207,9 @@ class UIService {
         
         // Reset form
         this.elements.newTrackerForm.reset();
+        
+        // Set default values again for the next tracker
+        this.setDefaultFormValues();
     }
 
     /**
