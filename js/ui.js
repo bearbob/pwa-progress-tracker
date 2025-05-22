@@ -103,8 +103,7 @@ class UIService {
 
     /**
      * Handle clicks on tracker cards and their elements
-     */
-    handleTrackerActions(e) {
+     */    handleTrackerActions(e) {
         const target = e.target;
         const trackerId = target.closest('.tracker-card')?.dataset.id;
         
@@ -118,6 +117,12 @@ class UIService {
         // Handle add button click
         if (target.classList.contains('btn-add')) {
             this.toggleAddForm(trackerId);
+        }
+        
+        // Handle form close button click
+        if (target.classList.contains('form-close-button')) {
+            const form = target.closest('.update-form, .history-list');
+            this.closeForm(trackerId, form);
         }
         
         // Handle tracker menu button click
@@ -320,6 +325,17 @@ class UIService {
     }
 
     /**
+     * Close the currently open form
+     * @param {string} trackerId - The ID of the tracker
+     * @param {HTMLElement} form - The form element to close
+     */
+    closeForm(trackerId, form) {
+        if (form) {
+            form.classList.add('hidden');
+        }
+    }
+
+    /**
      * Format a date string for display in history
      */
     formatDate(dateString) {
@@ -403,23 +419,23 @@ class UIService {
                         </button>
                     </div>
                 </div>
-                
                 <h3 class="tracker-title">${tracker.name}</h3>
-                  <div class="progress-container">
+                <div class="progress-container">
                     <div class="progress-bar ${progressStatus}" style="width: ${Math.min(100,progress)}%">
                         <span class="progress-text">
                             <span class="progress-percentage">${Math.round(progress)}%</span>
                             <span class="progress-values">${tracker.currentValue} / ${tracker.targetValue}</span>
                         </span>
                     </div>
-                </div>                <div class="tracker-status-container">
+                </div>
+                <div class="tracker-status-container">
                     ${showProgressStatus ? `<div class="progress-status ${progressStatus}">${progressStatusText}</div>` : ''}
                     <div class="tracker-actions">
                         <button class="btn btn-add">+</button>
                     </div>
                     ${completionMessage}
-                </div>
-                <div class="update-form tracker-menu-actions hidden" data-id="${tracker.id}">
+                </div>                <div class="update-form tracker-menu-actions hidden" data-id="${tracker.id}">
+                    <button type="button" class="form-close-button close-button" aria-label="Close">&times;</button>
                     <button class="btn btn-update">Set Value</button>
                     <button class="btn tracker-menu-item" data-action="update-dates">Set Dates</button>
                     <button class="btn tracker-menu-item" data-action="show-history">History</button>
@@ -427,40 +443,40 @@ class UIService {
                     <button class="btn tracker-menu-item" data-action="rename">Rename</button>
                     <button class="btn tracker-menu-item tracker-menu-item-danger" data-action="delete">Delete</button>
                 </div>
-                
-                <form class="update-form update-value-form hidden">
+                  <form class="update-form update-value-form hidden">
+                    <button type="button" class="form-close-button close-button" aria-label="Close">&times;</button>
                     <div class="form-group">
                         <label>New Value:</label>
                         <input type="number" class="new-value-input" min="0" required>
                     </div>
                     <button type="submit" class="btn">Save</button>
                 </form>
-                
-                <form class="update-form add-value-form hidden">
+                  <form class="update-form add-value-form hidden">
+                    <button type="button" class="form-close-button close-button" aria-label="Close">&times;</button>
                     <div class="form-group">
                         <label>Add to Current Value:</label>
                         <input type="number" class="add-value-input" required>
                     </div>
                     <button type="submit" class="btn">Save</button>
                 </form>
-                
-                <form class="update-form update-target-form hidden">
+                  <form class="update-form update-target-form hidden">
+                    <button type="button" class="form-close-button close-button" aria-label="Close">&times;</button>
                     <div class="form-group">
                         <label>New Target:</label>
                         <input type="number" class="new-target-input" min="1" required>
                     </div>
                     <button type="submit" class="btn">Save</button>
                 </form>
-                
-                <form class="update-form rename-form hidden">
+                  <form class="update-form rename-form hidden">
+                    <button type="button" class="form-close-button close-button" aria-label="Close">&times;</button>
                     <div class="form-group">
                         <label>New Name:</label>
                         <input type="text" class="new-name-input" required>
                     </div>
                     <button type="submit" class="btn">Save</button>
                 </form>
-                
-                <form class="update-form date-form hidden">
+                  <form class="update-form date-form hidden">
+                    <button type="button" class="form-close-button close-button" aria-label="Close">&times;</button>
                     <div class="form-group">
                         <label>Start Date:</label>
                         <input type="date" class="start-date-input">
@@ -471,8 +487,8 @@ class UIService {
                     </div>
                     <button type="submit" class="btn">Save</button>
                 </form>
-                
-                <div class="history-list hidden">
+                  <div class="history-list hidden">
+                    <button type="button" class="form-close-button close-button" aria-label="Close">&times;</button>
                     <h4>Value History</h4>
                     ${historyHTML}
                 </div>

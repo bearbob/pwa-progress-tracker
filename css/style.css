@@ -308,7 +308,7 @@ input:focus {
     font-size: 1.3rem;
     font-weight: 600;
     margin: 0 0 0 0;
-    color: #333;
+    color: #222;
     padding-left: 0.25rem;
 }
 
@@ -318,7 +318,7 @@ input:focus {
     border-radius: 12px;
     overflow: hidden;
     margin: 0.3rem 0 0.3rem;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15);
     position: relative;
 }
 
@@ -329,7 +329,7 @@ input:focus {
     justify-content: flex-end;
     color: white;
     font-weight: 500;
-    transition: width 0.5s ease-out, background-color 0.3s ease;
+    transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.3s ease;
 }
 
 .progress-bar.on-track {
@@ -383,6 +383,34 @@ input:focus {
     border-top: 1px solid #f0f0f0;
     border-radius: 8px;
     background-color: #fafafa;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.form-close-button {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    font-size: 1.25rem;
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    padding: 0 0.5rem;
+    line-height: 1;
+}
+
+.form-close-button:hover {
+    color: #333;
+}
+
+.history-list {
+    position: relative;
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #fafafa;
+    border-radius: 8px;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
