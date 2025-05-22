@@ -427,8 +427,8 @@ class UIService {
                 </div>                <div class="tracker-status-container">
                     ${showProgressStatus ? `<div class="progress-status ${progressStatus}">${progressStatusText}</div>` : ''}
                     <div class="tracker-actions">
-                        <button class="btn btn-update">Update</button>
-                        <button class="btn btn-add">Add</button>
+                        <button class="btn btn-update">Set</button>
+                        <button class="btn btn-add">+</button>
                     </div>
                     ${completionMessage}
                 </div>

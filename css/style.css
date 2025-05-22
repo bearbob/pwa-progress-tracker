@@ -275,13 +275,13 @@ input:focus {
 #trackers-list {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 0.7rem;
 }
 
 .tracker-card {
     border: 1px solid #eee;
     border-radius: 16px;
-    padding: 1.0rem;
+    padding: 0.7rem 1.0rem;
     margin-bottom: 0;
     background-color: white;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
@@ -317,7 +317,7 @@ input:focus {
     background-color: #3c3c3c;
     border-radius: 12px;
     overflow: hidden;
-    margin: 1.25rem 0 0.5rem;
+    margin: 0.3rem 0 0.3rem;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
     position: relative;
 }
