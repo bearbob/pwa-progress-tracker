@@ -123,7 +123,7 @@ class UIService {
         // Handle tracker menu button click
         if (target.closest('.tracker-menu-button')) {
             e.stopPropagation();
-            const menuDropdown = document.querySelector(`.tracker-menu-dropdown[data-id="${trackerId}"]`);
+            const menuDropdown = document.querySelector(`.tracker-menu-actions[data-id="${trackerId}"]`);
             
             // Close any other open menus
             if (this.activeMenu && this.activeMenu !== menuDropdown) {
@@ -150,11 +150,6 @@ class UIService {
             } else if (action === 'update-dates') {
                 this.showDateForm(trackerId);
             }
-            
-            // Close the menu
-            const menuDropdown = document.querySelector(`.tracker-menu-dropdown[data-id="${trackerId}"]`);
-            menuDropdown.classList.add('hidden');
-            this.activeMenu = null;
         }
     }
 
@@ -406,13 +401,6 @@ class UIService {
                             <span class="dot"></span>
                             <span class="dot"></span>
                         </button>
-                        <div class="tracker-menu-dropdown hidden" data-id="${tracker.id}">
-                            <button class="tracker-menu-item" data-action="update-dates">Set Dates</button>
-                            <button class="tracker-menu-item" data-action="show-history">Show History</button>
-                            <button class="tracker-menu-item" data-action="update-target">Update Target</button>
-                            <button class="tracker-menu-item" data-action="rename">Rename</button>
-                            <button class="tracker-menu-item tracker-menu-item-danger" data-action="delete">Delete Tracker</button>
-                        </div>
                     </div>
                 </div>
                 
@@ -427,10 +415,17 @@ class UIService {
                 </div>                <div class="tracker-status-container">
                     ${showProgressStatus ? `<div class="progress-status ${progressStatus}">${progressStatusText}</div>` : ''}
                     <div class="tracker-actions">
-                        <button class="btn btn-update">Set</button>
                         <button class="btn btn-add">+</button>
                     </div>
                     ${completionMessage}
+                </div>
+                <div class="update-form tracker-menu-actions hidden" data-id="${tracker.id}">
+                    <button class="btn btn-update">Set Value</button>
+                    <button class="btn tracker-menu-item" data-action="update-dates">Set Dates</button>
+                    <button class="btn tracker-menu-item" data-action="show-history">History</button>
+                    <button class="btn tracker-menu-item" data-action="update-target">Update Target</button>
+                    <button class="btn tracker-menu-item" data-action="rename">Rename</button>
+                    <button class="btn tracker-menu-item tracker-menu-item-danger" data-action="delete">Delete</button>
                 </div>
                 
                 <form class="update-form update-value-form hidden">
