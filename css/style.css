@@ -508,7 +508,7 @@ input:focus {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 0.5rem 0;
+    margin: 0;
 }
 
 .progress-status {
@@ -553,6 +553,14 @@ footer {
     
     .btn {
         width: 100%;
+        margin-top: 0;
+    }
+
+    .btn.btn-update {
+        margin-top: 1.0rem;
+    }
+
+    .btn.tracker-menu-item {
         margin-top: 1.0rem;
     }
     

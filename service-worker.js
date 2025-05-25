@@ -1,7 +1,7 @@
 // Progress Tracker PWA - Service Worker
 
 const CACHE_NAME = 'progress-tracker-v2';
-const APP_VERSION = '1.3.1'; // Version tracking - change this when updating the app
+const APP_VERSION = '1.3.2'; // Version tracking - change this when updating the app
 
 // Get the base path for assets
 const getBasePath = () => {
