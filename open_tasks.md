@@ -1,1 +1,0 @@
-- tracker details are hidden by default and visible when tapping on the name
