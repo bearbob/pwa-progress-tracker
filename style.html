@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Style Guide - Progress Tracker</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body { 
+            padding: 20px; 
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .example-label {
+            color: var(--text-secondary);
+            margin: 40px 0 10px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <h1>Style Guide</h1>
+    <div id="trackers-list">
+        
+        <div class="example-label">Empty Tracker</div>
+        <div class="tracker-card" data-id="1">
+            <div class="tracker-header">
+                <div class="tracker-menu-container">
+                    <button class="tracker-menu-button" aria-label="Tracker Menu">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </button>
+                </div>
+            </div>
+            <h3 class="tracker-title">Empty Tracker</h3>
+            <div class="progress-container">
+                <div class="progress-bar on-track" style="width: 0%">
+                    <span class="progress-text">
+                        <span class="progress-percentage">0%</span>
+                        <span class="progress-values">0 / 100</span>
+                    </span>
+                </div>
+            </div>
+            <div class="tracker-status-container">
+                <div class="progress-status on-track">On Track</div>
+                <div class="tracker-actions">
+                    <button class="btn btn-add">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="example-label">On Track Tracker</div>
+        <div class="tracker-card" data-id="2">
+            <div class="tracker-header">
+                <div class="tracker-menu-container">
+                    <button class="tracker-menu-button" aria-label="Tracker Menu">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </button>
+                </div>
+            </div>
+            <h3 class="tracker-title">Reading Goal</h3>
+            <div class="progress-container">
+                <div class="progress-bar on-track" style="width: 65%">
+                    <span class="progress-text">
+                        <span class="progress-percentage">65%</span>
+                        <span class="progress-values">13 / 20</span>
+                    </span>
+                </div>
+            </div>
+            <div class="tracker-status-container">
+                <div class="progress-status on-track">On Track</div>
+                <div class="tracker-actions">
+                    <button class="btn btn-add">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="example-label">Slightly Off Track Tracker</div>
+        <div class="tracker-card" data-id="3b">
+            <div class="tracker-header">
+                <div class="tracker-menu-container">
+                    <button class="tracker-menu-button" aria-label="Tracker Menu">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </button>
+                </div>
+            </div>
+            <h3 class="tracker-title">Learning Spanish</h3>
+            <div class="progress-container">
+                <div class="progress-bar slightly-off" style="width: 45%">
+                    <span class="progress-text">
+                        <span class="progress-percentage">45%</span>
+                        <span class="progress-values">45 / 100</span>
+                    </span>
+                </div>
+            </div>
+            <div class="tracker-status-container">
+                <div class="progress-status slightly-off">Slightly Off Track</div>
+                <div class="tracker-actions">
+                    <button class="btn btn-add">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="example-label">Off Track Tracker</div>
+        <div class="tracker-card" data-id="3">
+            <div class="tracker-header">
+                <div class="tracker-menu-container">
+                    <button class="tracker-menu-button" aria-label="Tracker Menu">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </button>
+                </div>
+            </div>
+            <h3 class="tracker-title">Fitness Challenge</h3>
+            <div class="progress-container">
+                <div class="progress-bar off-track" style="width: 30%">
+                    <span class="progress-text">
+                        <span class="progress-percentage">30%</span>
+                        <span class="progress-values">30 / 100</span>
+                    </span>
+                </div>
+            </div>
+            <div class="tracker-status-container">
+                <div class="progress-status off-track">Off Track</div>
+                <div class="tracker-actions">
+                    <button class="btn btn-add">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="example-label">Completed Tracker</div>
+        <div class="tracker-card" data-id="4">
+            <div class="tracker-header">
+                <div class="tracker-menu-container">
+                    <button class="tracker-menu-button" aria-label="Tracker Menu">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </button>
+                </div>
+            </div>
+            <h3 class="tracker-title">Project X</h3>
+            <div class="progress-container">
+                <div class="progress-bar on-track" style="width: 100%">
+                    <span class="progress-text">
+                        <span class="progress-percentage">100%</span>
+                        <span class="progress-values">50 / 50</span>
+                    </span>
+                </div>
+            </div>
+            <div class="tracker-status-container">
+                <div class="progress-status on-track">On Track</div>
+                <div class="tracker-actions">
+                    <button class="btn btn-add">+</button>
+                </div>
+                <div class="status-message ahead">Completed</div>
+            </div>
+        </div>
+
+        <div class="example-label">Tally Counter</div>
+        <div class="tracker-card tally-card" data-id="5">
+            <div class="tracker-header">
+                <div class="tracker-menu-container">
+                    <button class="tracker-menu-button" aria-label="Tracker Menu">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </button>
+                </div>
+            </div>
+            <h3 class="tracker-title">Coffee Cups</h3>
+            <div class="tally-container">
+                <div class="tally-value">42</div>
+            </div>
+            <div class="tracker-status-container">
+                <div class="tracker-actions">
+                    <button class="btn btn-add" aria-label="Increment">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="example-label">Tracker with Menu Open</div>
+        <div class="tracker-card" data-id="6">
+            <div class="tracker-header">
+                <div class="tracker-menu-container">
+                    <button class="tracker-menu-button" aria-label="Tracker Menu">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </button>
+                </div>
+            </div>
+            <h3 class="tracker-title">Menu Example</h3>
+            <div class="progress-container">
+                <div class="progress-bar on-track" style="width: 50%">
+                    <span class="progress-text">
+                        <span class="progress-percentage">50%</span>
+                        <span class="progress-values">5 / 10</span>
+                    </span>
+                </div>
+            </div>
+            <div class="tracker-status-container">
+                <div class="progress-status on-track">On Track</div>
+                <div class="tracker-actions">
+                    <button class="btn btn-add">+</button>
+                </div>
+            </div>
+            <!-- Menu is not hidden here -->
+            <div class="update-form tracker-menu-actions" data-id="6">
+                <button type="button" class="form-close-button close-button" aria-label="Close">&times;</button>
+                <button class="btn btn-update">Set Value</button>
+                <button class="btn tracker-menu-item" data-action="update-dates">Set Dates</button>
+                <button class="btn tracker-menu-item" data-action="show-history">History</button>
+                <button class="btn tracker-menu-item" data-action="update-target">Update Target</button>
+                <button class="btn tracker-menu-item" data-action="rename">Rename</button>
+                <button class="btn tracker-menu-item tracker-menu-item-danger" data-action="delete">Delete</button>
+            </div>
+        </div>
+
+        <div class="example-label">Tracker with Update Form Open</div>
+        <div class="tracker-card" data-id="7">
+            <div class="tracker-header">
+                <div class="tracker-menu-container">
+                    <button class="tracker-menu-button" aria-label="Tracker Menu">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </button>
+                </div>
+            </div>
+            <h3 class="tracker-title">Form Example</h3>
+            <div class="progress-container">
+                <div class="progress-bar on-track" style="width: 50%">
+                    <span class="progress-text">
+                        <span class="progress-percentage">50%</span>
+                        <span class="progress-values">5 / 10</span>
+                    </span>
+                </div>
+            </div>
+            <div class="tracker-status-container">
+                <div class="progress-status on-track">On Track</div>
+                <div class="tracker-actions">
+                    <button class="btn btn-add">+</button>
+                </div>
+            </div>
+            <!-- Form is not hidden here -->
+            <form class="update-form update-value-form">
+                <button type="button" class="form-close-button close-button" aria-label="Close">&times;</button>
+                <div class="form-group">
+                    <label>New Value:</label>
+                    <input type="number" class="new-value-input" min="0" required value="5">
+                </div>
+                <button type="submit" class="btn">Save</button>
+            </form>
+        </div>
+
+    </div>
+</body>
+</html>

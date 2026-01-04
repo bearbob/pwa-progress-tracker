@@ -11,7 +11,7 @@ class TrackerManager {
         this.trackers = this.storageService.loadTrackers();
         
         // Version management
-        this.currentVersion = '1.4.1'; // Client version - keep track of the last version we ran
+        this.currentVersion = '1.4.2'; // Client version - keep track of the last version we ran
         this.serverVersion = null;
         this.updateAvailable = false;
         this.serviceWorkerRegistration = null;
