@@ -1,7 +1,7 @@
 // Progress Tracker PWA - Service Worker
 
 const CACHE_NAME = 'progress-tracker-v2';
-const APP_VERSION = '1.4.0'; // Version tracking - change this when updating the app
+const APP_VERSION = '1.4.1'; // Version tracking - change this when updating the app
 
 // Get the base path for assets
 const getBasePath = () => {
@@ -49,7 +49,16 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        return cache.addAll(ASSETS_TO_CACHE);
+        // Try to cache all assets
+        return cache.addAll(ASSETS_TO_CACHE).catch(err => {
+            console.error('Failed to cache all assets. Trying individually to identify the culprit.', err);
+            // If addAll fails, try adding them one by one to see which one fails
+            return Promise.all(ASSETS_TO_CACHE.map(url => {
+                return cache.add(url).catch(error => {
+                    console.error(`Failed to cache asset: ${url}`, error);
+                });
+            }));
+        });
       })
       .then(() => {
         return self.skipWaiting();
