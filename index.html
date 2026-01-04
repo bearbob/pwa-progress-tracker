@@ -29,6 +29,7 @@
                 </button>
                 <div id="menu-dropdown" class="menu-dropdown hidden">
                     <button id="create-tracker-button" class="menu-item">Create New Tracker</button>
+                    <button id="create-tally-button" class="menu-item">Create Tally Counter</button>
                 </div>
             </div>
         </div>
@@ -68,6 +69,29 @@
                         <input type="date" id="target-date">
                     </div>
                     <button type="submit" class="btn">Create Tracker</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal overlay for tally counter creation -->
+    <div id="create-tally-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create Tally Counter</h2>
+                <button id="close-tally-modal-button" class="close-button">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="new-tally-form">
+                    <div class="form-group">
+                        <label for="tally-name">Counter Name:</label>
+                        <input type="text" id="tally-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tally-start-value">Start Value:</label>
+                        <input type="number" id="tally-start-value" min="0" value="0" required>
+                    </div>
+                    <button type="submit" class="btn">Create Counter</button>
                 </form>
             </div>
         </div>

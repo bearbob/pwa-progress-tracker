@@ -24,7 +24,8 @@ class StorageService {
                     tracker.targetValue, 
                     tracker.startDate, 
                     tracker.targetDate, 
-                    tracker.history
+                    tracker.history,
+                    tracker.type || 'progress'
                 )
             );
         }

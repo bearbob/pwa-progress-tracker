@@ -11,7 +11,7 @@ class TrackerManager {
         this.trackers = this.storageService.loadTrackers();
         
         // Version management
-        this.currentVersion = '1.3.5'; // Client version - keep track of the last version we ran
+        this.currentVersion = '1.4.0'; // Client version - keep track of the last version we ran
         this.serverVersion = null;
         this.updateAvailable = false;
         this.serviceWorkerRegistration = null;
@@ -224,12 +224,12 @@ class TrackerManager {
     /**
      * Add a new tracker
      */
-    addTracker(name, currentValue, targetValue, startDate = null, targetDate = null) {
+    addTracker(name, currentValue, targetValue, startDate = null, targetDate = null, type = 'progress') {
         // Generate a unique ID using timestamp
         const id = 'tracker_' + Date.now();
         
         // Create new tracker and add to the collection
-        const newTracker = new Tracker(id, name, currentValue, targetValue, startDate, targetDate);
+        const newTracker = new Tracker(id, name, currentValue, targetValue, startDate, targetDate, [], type);
         this.trackers.push(newTracker);
         
         // Save and update UI

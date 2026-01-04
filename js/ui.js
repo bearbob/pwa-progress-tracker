@@ -11,14 +11,20 @@ class UIService {
             menuButton: document.getElementById('menu-button'),
             menuDropdown: document.getElementById('menu-dropdown'),
             createTrackerButton: document.getElementById('create-tracker-button'),
+            createTallyButton: document.getElementById('create-tally-button'),
             createTrackerModal: document.getElementById('create-tracker-modal'),
+            createTallyModal: document.getElementById('create-tally-modal'),
             closeModalButton: document.getElementById('close-modal-button'),
+            closeTallyModalButton: document.getElementById('close-tally-modal-button'),
             newTrackerForm: document.getElementById('new-tracker-form'),
+            newTallyForm: document.getElementById('new-tally-form'),
             trackerNameInput: document.getElementById('tracker-name'),
             currentValueInput: document.getElementById('current-value'),
             targetValueInput: document.getElementById('target-value'),
             startDateInput: document.getElementById('start-date'),
-            targetDateInput: document.getElementById('target-date')
+            targetDateInput: document.getElementById('target-date'),
+            tallyNameInput: document.getElementById('tally-name'),
+            tallyStartValueInput: document.getElementById('tally-start-value')
         };
     }
 
@@ -48,15 +54,30 @@ class UIService {
             this.setDefaultFormValues();
         });
 
+        // Create tally button in menu
+        this.elements.createTallyButton.addEventListener('click', () => {
+            this.elements.menuDropdown.classList.add('hidden');
+            this.elements.createTallyModal.classList.remove('hidden');
+            this.elements.tallyStartValueInput.value = '0';
+        });
+
         // Close modal button
         this.elements.closeModalButton.addEventListener('click', () => {
             this.elements.createTrackerModal.classList.add('hidden');
+        });
+
+        // Close tally modal button
+        this.elements.closeTallyModalButton.addEventListener('click', () => {
+            this.elements.createTallyModal.classList.add('hidden');
         });
 
         // Close modal when clicking outside
         window.addEventListener('click', (e) => {
             if (e.target === this.elements.createTrackerModal) {
                 this.elements.createTrackerModal.classList.add('hidden');
+            }
+            if (e.target === this.elements.createTallyModal) {
+                this.elements.createTallyModal.classList.add('hidden');
             }
             
             // Close dropdown when clicking outside
@@ -76,6 +97,13 @@ class UIService {
             e.preventDefault();
             this.handleNewTrackerSubmit();
             this.elements.createTrackerModal.classList.add('hidden');
+        });
+
+        // Add new tally form submission
+        this.elements.newTallyForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.handleNewTallySubmit();
+            this.elements.createTallyModal.classList.add('hidden');
         });
 
         // Event delegation for tracker actions (update, menu toggle, etc.)
@@ -116,7 +144,14 @@ class UIService {
         
         // Handle add button click
         if (target.classList.contains('btn-add')) {
-            this.toggleAddForm(trackerId);
+            const tracker = this.trackerManager.getTracker(trackerId);
+            if (tracker.type === 'tally') {
+                // Direct increment for tally counters
+                const newTotal = parseFloat(tracker.currentValue) + 1;
+                this.trackerManager.updateTrackerValue(trackerId, newTotal);
+            } else {
+                this.toggleAddForm(trackerId);
+            }
         }
         
         // Handle form close button click
@@ -210,6 +245,20 @@ class UIService {
         
         // Set default values again for the next tracker
         this.setDefaultFormValues();
+    }
+
+    /**
+     * Handle new tally form submission
+     */
+    handleNewTallySubmit() {
+        const name = this.elements.tallyNameInput.value.trim();
+        const currentValue = this.elements.tallyStartValueInput.value;
+        
+        // For tally, targetValue is null, dates are null, type is 'tally'
+        this.trackerManager.addTracker(name, currentValue, null, null, null, 'tally');
+        
+        // Reset form
+        this.elements.newTallyForm.reset();
     }
 
     /**
@@ -386,7 +435,63 @@ class UIService {
             historyHTML += `<div class="history-entry">
                 ${this.formatDate(entry.date)}: ${entry.value}
             </div>`;
-        });        // Progress status messages
+        });
+
+        // Tally Counter Visualization
+        if (tracker.type === 'tally') {
+            return `
+            <div class="tracker-card tally-card" data-id="${tracker.id}">
+                <div class="tracker-header">
+                    <div class="tracker-menu-container">
+                        <button class="tracker-menu-button" aria-label="Tracker Menu">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </button>
+                    </div>
+                </div>
+                <h3 class="tracker-title">${tracker.name}</h3>
+                <div class="tally-container">
+                    <div class="tally-value">${tracker.currentValue}</div>
+                </div>
+                <div class="tracker-status-container">
+                    <div class="tracker-actions">
+                        <button class="btn btn-add" aria-label="Increment">+</button>
+                    </div>
+                </div>
+                <div class="update-form tracker-menu-actions hidden" data-id="${tracker.id}">
+                    <button type="button" class="form-close-button close-button" aria-label="Close">&times;</button>
+                    <button class="btn btn-update">Set Value</button>
+                    <button class="btn tracker-menu-item" data-action="show-history">History</button>
+                    <button class="btn tracker-menu-item" data-action="rename">Rename</button>
+                    <button class="btn tracker-menu-item tracker-menu-item-danger" data-action="delete">Delete</button>
+                </div>
+                  <form class="update-form update-value-form hidden">
+                    <button type="button" class="form-close-button close-button" aria-label="Close">&times;</button>
+                    <div class="form-group">
+                        <label>New Value:</label>
+                        <input type="number" class="new-value-input" min="0" required>
+                    </div>
+                    <button type="submit" class="btn">Save</button>
+                </form>
+                  <form class="update-form rename-form hidden">
+                    <button type="button" class="form-close-button close-button" aria-label="Close">&times;</button>
+                    <div class="form-group">
+                        <label>New Name:</label>
+                        <input type="text" class="new-name-input" required>
+                    </div>
+                    <button type="submit" class="btn">Save</button>
+                </form>
+                  <div class="history-list hidden">
+                    <button type="button" class="form-close-button close-button" aria-label="Close">&times;</button>
+                    <h4>Value History</h4>
+                    ${historyHTML}
+                </div>
+            </div>
+            `;
+        }
+
+        // Progress status messages
         let completionMessage = '';
         let progressStatusText = '';
         let showProgressStatus = tracker.startDate && tracker.targetDate;

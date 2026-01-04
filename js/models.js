@@ -1,24 +1,28 @@
 // Tracker Model
 
 class Tracker {
-    constructor(id, name, currentValue, targetValue, startDate = null, targetDate = null, history = []) {
+    constructor(id, name, currentValue, targetValue, startDate = null, targetDate = null, history = [], type = 'progress') {
         this.id = id;
         this.name = name;
         this.currentValue = parseFloat(currentValue);
-        this.targetValue = parseFloat(targetValue);
+        this.targetValue = targetValue ? parseFloat(targetValue) : null;
         this.startDate = startDate;
         this.targetDate = targetDate;
         this.history = history.length > 0 ? history : [{
             date: new Date().toISOString(),
             value: this.currentValue
         }];
+        this.type = type;
     }
 
     getProgress() {
+        if (this.type === 'tally') return 0;
         return (this.currentValue / this.targetValue) * 100;
     }
     
     getExpectedProgress() {
+        if (this.type === 'tally') return null;
+        
         // If no start or target date, return null (can't calculate expected progress)
         if (!this.startDate || !this.targetDate) {
             return null;
@@ -47,6 +51,8 @@ class Tracker {
     }
     
     getProgressStatus() {
+        if (this.type === 'tally') return "on-track";
+        
         const expectedProgress = this.getExpectedProgress();
         
         // If we can't calculate expected progress, return "on-track"
