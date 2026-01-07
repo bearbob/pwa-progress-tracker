@@ -492,22 +492,25 @@ class UIService {
         }
 
         // Progress status messages
-        let completionMessage = '';
         let progressStatusText = '';
         let showProgressStatus = tracker.startDate && tracker.targetDate;
+        let displayStatus = progressStatus;
         
-        // Set completion message if completed
+        // Check for completed or failed status
         if (progress >= 100) {
-            completionMessage = `<div class="status-message ahead">Completed</div>`;
-        }
-        
-        // Set progress status indicator based on tracker status, but only if dates are set
-        if (showProgressStatus) {
-            if (progressStatus === "on-track") {
+            displayStatus = 'completed';
+            progressStatusText = 'Completed';
+            showProgressStatus = true;
+        } else if (tracker.targetDate && new Date(tracker.targetDate) < new Date() && progress < 100) {
+            displayStatus = 'failed';
+            progressStatusText = 'Failed';
+            showProgressStatus = true;
+        } else if (showProgressStatus) {
+            if (displayStatus === "on-track") {
                 progressStatusText = "On Track";
-            } else if (progressStatus === "slightly-off") {
+            } else if (displayStatus === "slightly-off") {
                 progressStatusText = "Slightly Off Track";
-            } else if (progressStatus === "off-track") {
+            } else if (displayStatus === "off-track") {
                 progressStatusText = "Off Track";
             }
         }
@@ -526,7 +529,7 @@ class UIService {
                 </div>
                 <h3 class="tracker-title">${tracker.name}</h3>
                 <div class="progress-container">
-                    <div class="progress-bar ${progressStatus}" style="width: ${Math.min(100,progress)}%">
+                    <div class="progress-bar ${displayStatus}" style="width: ${Math.min(100,progress)}%">
                         <span class="progress-text">
                             <span class="progress-percentage">${Math.round(progress)}%</span>
                             <span class="progress-values">${tracker.currentValue} / ${tracker.targetValue}</span>
@@ -534,11 +537,10 @@ class UIService {
                     </div>
                 </div>
                 <div class="tracker-status-container">
-                    ${showProgressStatus ? `<div class="progress-status ${progressStatus}">${progressStatusText}</div>` : ''}
+                    ${showProgressStatus ? `<div class="progress-status ${displayStatus}">${progressStatusText}</div>` : ''}
                     <div class="tracker-actions">
                         <button class="btn btn-add">+</button>
                     </div>
-                    ${completionMessage}
                 </div>                <div class="update-form tracker-menu-actions hidden" data-id="${tracker.id}">
                     <button type="button" class="form-close-button close-button" aria-label="Close">&times;</button>
                     <button class="btn btn-update">Set Value</button>

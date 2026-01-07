@@ -666,3 +666,21 @@ footer {
 .tally-card .tracker-status-container {
     justify-content: center;
 }
+/* New status styles for Completed and Failed states */
+.progress-bar.completed {
+    background: linear-gradient(90deg, var(--success-color), #059669);
+}
+
+.progress-bar.failed {
+    background: linear-gradient(90deg, var(--error-color), #dc2626);
+}
+
+.progress-status.completed {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: var(--success-color);
+}
+
+.progress-status.failed {
+    background-color: rgba(239, 68, 68, 0.2);
+    color: var(--error-color);
+}
