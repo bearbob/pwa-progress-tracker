@@ -350,12 +350,41 @@ input:focus {
 
 .tracker-header {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 0;
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
+}
+
+.drag-handle {
+    cursor: grab;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    opacity: 0.3;
+    user-select: none;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: opacity 0.2s;
+    line-height: 1;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.tracker-card:hover .drag-handle {
+    opacity: 0.7;
+}
+
+.tracker-card.dragging {
+    opacity: 0.4;
+}
+
+.tracker-card.drag-over-top {
+    border-top: 2px solid var(--primary-color);
+}
+
+.tracker-card.drag-over-bottom {
+    border-bottom: 2px solid var(--primary-color);
 }
 
 .tracker-title {

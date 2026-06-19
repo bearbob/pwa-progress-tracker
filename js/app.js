@@ -11,7 +11,7 @@ class TrackerManager {
         this.trackers = this.storageService.loadTrackers();
         
         // Version management
-        this.currentVersion = '1.5.0'; // Client version - keep track of the last version we ran
+        this.currentVersion = '1.6.0'; // Client version - keep track of the last version we ran
         this.serverVersion = null;
         this.updateAvailable = false;
         this.serviceWorkerRegistration = null;
@@ -285,6 +285,20 @@ class TrackerManager {
         }
     }
     
+    /**
+     * Reorder a tracker by moving it before or after a target tracker
+     */
+    reorderTracker(draggedId, targetId, insertAfter) {
+        const draggedIndex = this.trackers.findIndex(t => t.id === draggedId);
+        const targetIndex = this.trackers.findIndex(t => t.id === targetId);
+        if (draggedIndex === -1 || targetIndex === -1) return;
+
+        const [dragged] = this.trackers.splice(draggedIndex, 1);
+        const newTargetIndex = this.trackers.findIndex(t => t.id === targetId);
+        this.trackers.splice(insertAfter ? newTargetIndex + 1 : newTargetIndex, 0, dragged);
+        this.save();
+    }
+
     /**
      * Clear a tally counter's history (keeps current value)
      */

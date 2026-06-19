@@ -4,6 +4,7 @@ class UIService {
     constructor(trackerManager) {
         this.trackerManager = trackerManager;
         this.activeMenu = null;
+        this.dragSrcId = null;
         
         // Cache DOM elements
         this.elements = {
@@ -417,14 +418,59 @@ class UIService {
             return;
         }
         
-        // Sort trackers by name
-        const sortedTrackers = [...trackers].sort((a, b) => a.name.localeCompare(b.name));
-        
-        // Create tracker card for each tracker
-        sortedTrackers.forEach(tracker => {
+        // Render trackers in stored order
+        trackers.forEach(tracker => {
             this.elements.trackersList.innerHTML += this.createTrackerHTML(tracker);
         });
+
+        this.setupDragListeners();
     }    /**
+     * Attach drag-and-drop listeners to all rendered tracker cards
+     */
+    setupDragListeners() {
+        const cards = this.elements.trackersList.querySelectorAll('.tracker-card');
+        cards.forEach(card => {
+            card.addEventListener('dragstart', e => {
+                this.dragSrcId = card.dataset.id;
+                e.dataTransfer.effectAllowed = 'move';
+                // Defer adding the class so the drag ghost image is captured first
+                setTimeout(() => card.classList.add('dragging'), 0);
+            });
+
+            card.addEventListener('dragend', () => {
+                card.classList.remove('dragging');
+                this.elements.trackersList.querySelectorAll('.drag-over-top, .drag-over-bottom')
+                    .forEach(el => el.classList.remove('drag-over-top', 'drag-over-bottom'));
+            });
+
+            card.addEventListener('dragover', e => {
+                e.preventDefault();
+                if (card.dataset.id === this.dragSrcId) return;
+                const rect = card.getBoundingClientRect();
+                const isTop = e.clientY < rect.top + rect.height / 2;
+                card.classList.toggle('drag-over-top', isTop);
+                card.classList.toggle('drag-over-bottom', !isTop);
+            });
+
+            card.addEventListener('dragleave', e => {
+                if (!card.contains(e.relatedTarget)) {
+                    card.classList.remove('drag-over-top', 'drag-over-bottom');
+                }
+            });
+
+            card.addEventListener('drop', e => {
+                e.preventDefault();
+                const targetId = card.dataset.id;
+                if (!this.dragSrcId || this.dragSrcId === targetId) return;
+                const rect = card.getBoundingClientRect();
+                const insertAfter = e.clientY > rect.top + rect.height / 2;
+                this.trackerManager.reorderTracker(this.dragSrcId, targetId, insertAfter);
+                this.dragSrcId = null;
+            });
+        });
+    }
+
+    /**
      * Create HTML for a single tracker
      */
     createTrackerHTML(tracker) {
@@ -443,8 +489,9 @@ class UIService {
         // Tally Counter Visualization
         if (tracker.type === 'tally') {
             return `
-            <div class="tracker-card tally-card" data-id="${tracker.id}">
+            <div class="tracker-card tally-card" data-id="${tracker.id}" draggable="true">
                 <div class="tracker-header">
+                    <div class="drag-handle" aria-label="Drag to reorder">⠿</div>
                     <div class="tracker-menu-container">
                         <button class="tracker-menu-button" aria-label="Tracker Menu">
                             <span class="dot"></span>
@@ -521,8 +568,9 @@ class UIService {
         
         // Create tracker card with minimalist design
         return `
-            <div class="tracker-card" data-id="${tracker.id}">
+            <div class="tracker-card" data-id="${tracker.id}" draggable="true">
                 <div class="tracker-header">
+                    <div class="drag-handle" aria-label="Drag to reorder">⠿</div>
                     <div class="tracker-menu-container">
                         <button class="tracker-menu-button" aria-label="Tracker Menu">
                             <span class="dot"></span>
