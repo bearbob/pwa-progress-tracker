@@ -185,6 +185,8 @@ class UIService {
                 this.showUpdateTargetForm(trackerId);
             } else if (action === 'rename') {
                 this.showRenameForm(trackerId);
+            } else if (action === 'clear-history') {
+                this.trackerManager.clearTrackerHistory(trackerId);
             } else if (action === 'delete') {
                 this.trackerManager.deleteTracker(trackerId);
             } else if (action === 'update-dates') {
@@ -427,6 +429,7 @@ class UIService {
      */
     createTrackerHTML(tracker) {
         const progress = tracker.getProgress();
+        const expectedProgress = tracker.getExpectedProgress();
         const progressStatus = tracker.getProgressStatus();
         
         // Create history HTML
@@ -464,6 +467,7 @@ class UIService {
                     <button class="btn btn-update">Set Value</button>
                     <button class="btn tracker-menu-item" data-action="show-history">History</button>
                     <button class="btn tracker-menu-item" data-action="rename">Rename</button>
+                    <button class="btn tracker-menu-item tracker-menu-item-danger" data-action="clear-history">Clear History</button>
                     <button class="btn tracker-menu-item tracker-menu-item-danger" data-action="delete">Delete</button>
                 </div>
                   <form class="update-form update-value-form hidden">
@@ -535,6 +539,7 @@ class UIService {
                             <span class="progress-values">${tracker.currentValue} / ${tracker.targetValue}</span>
                         </span>
                     </div>
+                    ${expectedProgress !== null && expectedProgress > 0 && expectedProgress < 100 && progress < 100 ? `<div class="progress-now-marker" style="left: ${expectedProgress}%"></div>` : ''}
                 </div>
                 <div class="tracker-status-container">
                     ${showProgressStatus ? `<div class="progress-status ${displayStatus}">${progressStatusText}</div>` : ''}

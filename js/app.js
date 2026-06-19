@@ -11,7 +11,7 @@ class TrackerManager {
         this.trackers = this.storageService.loadTrackers();
         
         // Version management
-        this.currentVersion = '1.4.3'; // Client version - keep track of the last version we ran
+        this.currentVersion = '1.5.0'; // Client version - keep track of the last version we ran
         this.serverVersion = null;
         this.updateAvailable = false;
         this.serviceWorkerRegistration = null;
@@ -285,6 +285,20 @@ class TrackerManager {
         }
     }
     
+    /**
+     * Clear a tally counter's history (keeps current value)
+     */
+    clearTrackerHistory(trackerId) {
+        const tracker = this.getTracker(trackerId);
+        if (tracker) {
+            tracker.history = [{
+                date: new Date().toISOString(),
+                value: tracker.currentValue
+            }];
+            this.save();
+        }
+    }
+
     /**
      * Delete a tracker
      */
