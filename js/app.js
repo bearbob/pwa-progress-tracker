@@ -11,7 +11,7 @@ class TrackerManager {
         this.trackers = this.storageService.loadTrackers();
         
         // Version management
-        this.currentVersion = '1.6.0'; // Client version - keep track of the last version we ran
+        this.currentVersion = '1.6.1'; // Client version - keep track of the last version we ran
         this.serverVersion = null;
         this.updateAvailable = false;
         this.serviceWorkerRegistration = null;
@@ -285,6 +285,19 @@ class TrackerManager {
         }
     }
     
+    /**
+     * Move a tracker one position up (-1) or down (+1)
+     */
+    moveTracker(trackerId, direction) {
+        const index = this.trackers.findIndex(t => t.id === trackerId);
+        if (index === -1) return;
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= this.trackers.length) return;
+        const [tracker] = this.trackers.splice(index, 1);
+        this.trackers.splice(newIndex, 0, tracker);
+        this.save();
+    }
+
     /**
      * Reorder a tracker by moving it before or after a target tracker
      */

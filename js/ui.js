@@ -186,6 +186,10 @@ class UIService {
                 this.showUpdateTargetForm(trackerId);
             } else if (action === 'rename') {
                 this.showRenameForm(trackerId);
+            } else if (action === 'move-up') {
+                this.trackerManager.moveTracker(trackerId, -1);
+            } else if (action === 'move-down') {
+                this.trackerManager.moveTracker(trackerId, +1);
             } else if (action === 'clear-history') {
                 this.trackerManager.clearTrackerHistory(trackerId);
             } else if (action === 'delete') {
@@ -419,8 +423,8 @@ class UIService {
         }
         
         // Render trackers in stored order
-        trackers.forEach(tracker => {
-            this.elements.trackersList.innerHTML += this.createTrackerHTML(tracker);
+        trackers.forEach((tracker, index) => {
+            this.elements.trackersList.innerHTML += this.createTrackerHTML(tracker, index, trackers.length);
         });
 
         this.setupDragListeners();
@@ -473,7 +477,7 @@ class UIService {
     /**
      * Create HTML for a single tracker
      */
-    createTrackerHTML(tracker) {
+    createTrackerHTML(tracker, index = 0, total = 1) {
         const progress = tracker.getProgress();
         const expectedProgress = tracker.getExpectedProgress();
         const progressStatus = tracker.getProgressStatus();
@@ -514,6 +518,8 @@ class UIService {
                     <button class="btn btn-update">Set Value</button>
                     <button class="btn tracker-menu-item" data-action="show-history">History</button>
                     <button class="btn tracker-menu-item" data-action="rename">Rename</button>
+                    ${index > 0 ? `<button class="btn tracker-menu-item" data-action="move-up">Move Up</button>` : ''}
+                    ${index < total - 1 ? `<button class="btn tracker-menu-item" data-action="move-down">Move Down</button>` : ''}
                     <button class="btn tracker-menu-item tracker-menu-item-danger" data-action="clear-history">Clear History</button>
                     <button class="btn tracker-menu-item tracker-menu-item-danger" data-action="delete">Delete</button>
                 </div>
@@ -601,6 +607,8 @@ class UIService {
                     <button class="btn tracker-menu-item" data-action="show-history">History</button>
                     <button class="btn tracker-menu-item" data-action="update-target">Update Target</button>
                     <button class="btn tracker-menu-item" data-action="rename">Rename</button>
+                    ${index > 0 ? `<button class="btn tracker-menu-item" data-action="move-up">Move Up</button>` : ''}
+                    ${index < total - 1 ? `<button class="btn tracker-menu-item" data-action="move-down">Move Down</button>` : ''}
                     <button class="btn tracker-menu-item tracker-menu-item-danger" data-action="delete">Delete</button>
                 </div>
                   <form class="update-form update-value-form hidden">
